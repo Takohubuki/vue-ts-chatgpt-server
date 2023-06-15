@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "esModuleInterop": true,
+    "target": "ES2015",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist"
+  }
+}

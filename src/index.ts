@@ -6,19 +6,6 @@ import fetch, { Response } from 'node-fetch';
 import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
-// import { createProxyMiddleware } from 'http-proxy-middleware';
-
-// const options = {
-//     target: 'https://api.openai.com/',
-//     changeOrigin: true,
-//     ws: false,
-//     pathRewrite: {
-//         '/chat/completions': '/v1/chat/completions'
-//     }
-// }
-
-// const proxy1 = createProxyMiddleware(options);
-
 
 const baseURL = 'https://api.openai.com/v1';
 const app = express();
@@ -31,7 +18,7 @@ const logger = (request, response, next) => {
 app.use(bodyParser.json());
 app.use(logger);
 app.use(cors({
-    origin: 'https://www.tako1224.top:8080',
+    origin: '*',
     credentials: true
 }));
 

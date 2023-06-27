@@ -1,21 +1,11 @@
 import { log } from 'console';
 
+import https from 'https';
+import fs from 'fs';
 import fetch, { Response } from 'node-fetch';
 import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
-// import { createProxyMiddleware } from 'http-proxy-middleware';
-
-// const options = {
-//     target: 'https://api.openai.com/',
-//     changeOrigin: true,
-//     ws: false,
-//     pathRewrite: {
-//         '/chat/completions': '/v1/chat/completions'
-//     }
-// }
-
-// const proxy1 = createProxyMiddleware(options);
 
 const baseURL = 'https://api.openai.com/v1';
 const app = express();
@@ -27,7 +17,10 @@ const logger = (request, response, next) => {
 
 app.use(bodyParser.json());
 app.use(logger);
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    credentials: true
+}));
 
 
 app.post('/', async (request, response) => {
@@ -48,10 +41,17 @@ app.post('/', async (request, response) => {
     const stream = gpt_response.body;
 
 
-    response.setHeader('Content-Type', 'application/json');
+    response.setHeader('Content-Type', 'text/event-stream');
 
     stream.pipe(response);
 });
 
 
-app.listen(3000, () => log(`middleware is running on port 3000`));
+const options = {
+    key: fs.readFileSync('/ssl/xray.key'),
+    cert: fs.readFileSync('/ssl/xray.crt'),
+    ecdhCurve: 'auto'
+}
+const server = https.createServer(options, app);
+
+server.listen(3000, () => log(`middleware is running on port 3000`));
